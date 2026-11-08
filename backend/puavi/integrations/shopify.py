@@ -16,7 +16,7 @@ import httpx
 
 from puavi.integrations.http import IntegrationError, new_client, request
 
-DEFAULT_API_VERSION = "2025-10"
+DEFAULT_API_VERSION = "2026-10"
 
 
 @dataclass

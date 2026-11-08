@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import os
 import time
 from dataclasses import dataclass
 from datetime import date
@@ -15,7 +16,8 @@ import httpx
 
 from puavi.integrations.http import IntegrationError, new_client, request
 
-GRAPH = "https://graph.facebook.com/v21.0"
+# Versión de la Graph API configurable (Meta retira cada versión unos 2 años después).
+GRAPH = "https://graph.facebook.com/" + os.environ.get("META_GRAPH_API_VERSION", "v23.0")
 
 
 @dataclass

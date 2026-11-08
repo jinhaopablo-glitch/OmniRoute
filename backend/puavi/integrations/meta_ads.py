@@ -7,6 +7,7 @@ El gasto real nunca empieza sin una acción humana en Meta.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from decimal import Decimal
 
@@ -14,7 +15,8 @@ import httpx
 
 from puavi.integrations.http import new_client, request
 
-GRAPH = "https://graph.facebook.com/v21.0"
+# Versión de la Graph API configurable (Meta retira cada versión unos 2 años después).
+GRAPH = "https://graph.facebook.com/" + os.environ.get("META_GRAPH_API_VERSION", "v23.0")
 
 
 @dataclass

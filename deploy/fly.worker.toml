@@ -1,0 +1,12 @@
+# Worker de agentes en Fly.io (siempre encendido, sin puertos públicos).
+# Despliegue (desde la raíz del repositorio): fly deploy . --config deploy/fly.worker.toml --dockerfile deploy/Dockerfile
+app = "puavi-agents"
+primary_region = "mad"
+
+[processes]
+  worker = "python -m puavi.worker"
+
+[[vm]]
+  processes = ["worker"]
+  size = "shared-cpu-1x"
+  memory = "1gb"

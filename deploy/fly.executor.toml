@@ -1,0 +1,13 @@
+# Ejecutor en Fly.io: app SEPARADA para que sus secretos de escritura nunca
+# convivan con los del worker de agentes.
+# Despliegue (desde la raíz del repositorio): fly deploy . --config deploy/fly.executor.toml --dockerfile deploy/Dockerfile
+app = "puavi-executor"
+primary_region = "mad"
+
+[processes]
+  executor = "python -m puavi.executor"
+
+[[vm]]
+  processes = ["executor"]
+  size = "shared-cpu-1x"
+  memory = "512mb"

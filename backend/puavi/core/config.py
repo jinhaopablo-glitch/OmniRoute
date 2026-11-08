@@ -30,7 +30,7 @@ class _Base(BaseSettings):
     local_media_dir: str | None = Field(default=None, alias="PUAVI_LOCAL_MEDIA_DIR")
 
     shopify_store_domain: str | None = Field(default=None, alias="SHOPIFY_STORE_DOMAIN")
-    shopify_api_version: str = Field(default="2025-10", alias="SHOPIFY_API_VERSION")
+    shopify_api_version: str = Field(default="2026-10", alias="SHOPIFY_API_VERSION")
     instagram_user_id: str | None = Field(default=None, alias="INSTAGRAM_USER_ID")
 
 

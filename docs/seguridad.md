@@ -41,3 +41,24 @@ Estas restricciones están comprobadas por tests contra Postgres real en `backen
 - Los secretos se cargan como `SecretStr` (no aparecen en logs ni `repr`).
 - La `service_role` key de Supabase no la usa ningún proceso de PUAVI.
 - Tokens separados por proceso: Shopify lectura (agentes) y escritura (ejecutor).
+
+## Integraciones externas
+- **Shopify**: dos apps distintas; la de lectura la usan los agentes y la de escritura solo el
+  ejecutor. Las descripciones propuestas se limpian de HTML peligroso antes de crear la propuesta.
+- **Instagram/TikTok**: tokens separados de lectura (agentes) y publicación (ejecutor). TikTok
+  sube por defecto como **borrador** a tu app.
+- **Anuncios (Meta)**: aunque la propuesta esté aprobada, la campaña se crea **en pausa**; el
+  gasto real nunca empieza sin que la actives tú en Meta.
+- **Gastos y pagos**: no existe ninguna integración de pago. Aprobar un gasto solo lo registra;
+  lo haces tú manualmente.
+- **Imágenes**: solo se descargan de la CDN oficial de Shopify, con límite de tamaño y tipo.
+- **Vídeo**: FFmpeg se llama con argumentos fijos (sin shell); el texto de los guiones no puede
+  ejecutar comandos.
+- **Archivos**: bucket privado; el panel usa enlaces firmados temporales. Los procesos usan un
+  usuario técnico de Supabase Auth sin perfil (no ve el panel ni puede aprobar).
+
+## Panel
+- La clave `anon` es pública por diseño: todo acceso lo decide la RLS.
+- Cabeceras de seguridad (CSP, X-Frame-Options, etc.) en `dashboard/public/_headers`.
+- El markdown de los informes se renderiza sin HTML (no hay `dangerouslySetInnerHTML`).
+- Registro público desactivado en Supabase; MFA recomendado para owners.
