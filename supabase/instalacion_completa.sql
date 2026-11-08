@@ -1,4 +1,5 @@
 -- PUAVI AI · Instalación completa (todas las migraciones en orden).
+-- Solo para un proyecto de Supabase NUEVO y vacío: si encuentra tablas, se detiene sin tocar nada.
 -- Generado a partir de supabase/migrations/. Pégalo entero en el SQL Editor de Supabase y pulsa Run.
 
 
@@ -18,6 +19,18 @@
 -- Los roles puavi_* son NOLOGIN: el operador crea usuarios de login con
 -- contraseña propia que heredan de ellos (ver docs/despliegue.md).
 -- =============================================================================
+
+-- SEGURIDAD: esta instalación cierra los permisos por defecto del esquema public.
+-- Para no afectar nunca a otra aplicación, solo se instala en un proyecto VACÍO.
+do $$
+begin
+  if exists (select 1 from pg_tables where schemaname = 'public')
+     or exists (select 1 from pg_views where schemaname = 'public') then
+    raise exception 'Este proyecto de Supabase ya tiene tablas en el esquema public. '
+      'PUAVI AI debe instalarse en un proyecto nuevo y vacío. No se ha modificado nada.';
+  end if;
+end
+$$;
 
 do $$
 begin

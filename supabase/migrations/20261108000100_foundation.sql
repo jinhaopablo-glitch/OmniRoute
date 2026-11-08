@@ -14,6 +14,18 @@
 -- contraseña propia que heredan de ellos (ver docs/despliegue.md).
 -- =============================================================================
 
+-- SEGURIDAD: esta instalación cierra los permisos por defecto del esquema public.
+-- Para no afectar nunca a otra aplicación, solo se instala en un proyecto VACÍO.
+do $$
+begin
+  if exists (select 1 from pg_tables where schemaname = 'public')
+     or exists (select 1 from pg_views where schemaname = 'public') then
+    raise exception 'Este proyecto de Supabase ya tiene tablas en el esquema public. '
+      'PUAVI AI debe instalarse en un proyecto nuevo y vacío. No se ha modificado nada.';
+  end if;
+end
+$$;
+
 do $$
 begin
   if not exists (select 1 from pg_roles where rolname = 'puavi_agent') then
