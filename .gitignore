@@ -12,3 +12,4 @@ dist/
 .supabase/
 *.log
 media-cache/
+*.tsbuildinfo
