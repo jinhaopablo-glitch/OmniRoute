@@ -91,6 +91,27 @@ Crea solo las que vayas a usar; puedes añadir más después.
 6. Comprueba los registros: `fly logs -a puavi-agents` debe mostrar
    `Worker worker-1 iniciado · shopify=True …`.
 
+## Paso 3 (alternativa sin terminal) · Agentes y ejecutor en Railway
+
+Todo desde la web de railway.com (plan Hobby, 5 $/mes con 5 $ de uso incluidos).
+
+1. Regístrate con tu cuenta de GitHub y crea un proyecto: **New Project → Deploy from GitHub repo**
+   → elige el repositorio y la rama de PUAVI.
+2. En el servicio creado → **Settings**:
+   - **Service name:** `puavi-agentes`
+   - **Branch:** la rama de PUAVI
+   - **Custom Start Command:** `python -m puavi.worker`
+3. En **Variables** añade `RAILWAY_DOCKERFILE_PATH=deploy/Dockerfile` y las del **bloque 1** de
+   `.env.example` (solo esas).
+4. Crea un segundo servicio desde el mismo repositorio (**+ New → GitHub Repo**), llámalo
+   `puavi-ejecutor`, con **Start Command** `python -m puavi.executor`,
+   `RAILWAY_DOCKERFILE_PATH=deploy/Dockerfile` y las variables del **bloque 2**.
+5. No actives *Public Networking* en ninguno: no necesitan recibir visitas.
+6. En **Deployments → View logs** del worker debe aparecer `Worker worker-1 iniciado`.
+
+Las URL de base de datos usan el **Session pooler** de Supabase (Connect → Session pooler), con
+el usuario `puavi_agent_login.<ref-del-proyecto>` y su contraseña.
+
 ## Paso 4 · Panel en Cloudflare Pages
 
 1. En Cloudflare → Workers & Pages → *Create* → Pages → conecta el repositorio.

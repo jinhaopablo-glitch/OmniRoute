@@ -343,3 +343,14 @@ def test_orders_summary_aggregates(monkeypatch):
     shop = ShopifyClient("puavi.myshopify.com", "t", http=_client(handler))
     s = shop.orders_summary(date(2026, 1, 1))
     assert s["orders"] == 1 and s["cancelled"] == 1 and s["revenue_eur"] == 30.0
+
+
+def test_web_search_tool_version_per_model():
+    from puavi.llm.client import web_search_tool
+
+    assert web_search_tool("claude-haiku-5-5", 3)["type"] == "web_search_20250305"
+    assert web_search_tool("claude-opus-5-5", 3) == {
+        "type": "web_search_20260209",
+        "name": "web_search",
+        "max_uses": 3,
+    }

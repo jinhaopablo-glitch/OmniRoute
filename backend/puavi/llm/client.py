@@ -31,6 +31,13 @@ T = TypeVar("T", bound=BaseModel)
 ToolHandler = Callable[[dict[str, Any]], Any]
 
 WEB_SEARCH_TOOL = {"type": "web_search_20260209", "name": "web_search"}
+# Haiku no admite la variante con filtrado dinámico: usa la versión básica.
+WEB_SEARCH_TOOL_BASIC = {"type": "web_search_20250305", "name": "web_search"}
+
+
+def web_search_tool(model: str, max_uses: int) -> dict[str, Any]:
+    base = WEB_SEARCH_TOOL_BASIC if model.startswith("claude-haiku") else WEB_SEARCH_TOOL
+    return {**base, "max_uses": max_uses}
 
 
 class AgentRunError(RuntimeError):
@@ -106,7 +113,7 @@ class AgentLLM:
         handlers = {t.name: t.handler for t in tools}
         tool_defs: list[dict[str, Any]] = [t.definition() for t in tools]
         if web_search:
-            tool_defs.append({**WEB_SEARCH_TOOL, "max_uses": max_searches})
+            tool_defs.append(web_search_tool(model, max_searches))
         messages: list[dict[str, Any]] = [{"role": "user", "content": prompt}]
         usage = Usage()
         status, error, output = "error", None, None
