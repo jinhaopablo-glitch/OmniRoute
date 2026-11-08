@@ -20,12 +20,19 @@ a precios medios.
 ## Identidad visual
 | Uso | Color | Hex |
 |---|---|---|
-| Principal | Verde bosque | `#2F5233` |
-| Fondo | Crema cálido | `#F6EFE3` |
-| Acento (con moderación) | Terracota | `#C8643B` |
-| Texto | Casi negro verdoso | `#1E2A20` |
+| Principal | Verde bosque | `#203D2B` |
+| Fondo | Crema cálido | `#F5EBD8` |
+| Acento (con moderación) | Terracota | `#C66A3D` |
+| Texto | Casi negro verdoso (derivado del verde) | `#14261B` |
 
 Estilo moderno, limpio, accesible; fotos luminosas y naturales con mascotas reales.
+
+**Accesibilidad (contraste WCAG):**
+- Verde bosque sobre crema: 10,1:1 ✅ para cualquier texto.
+- Terracota sobre crema: 3,2:1 → solo para acentos, iconos, botones y textos grandes
+  (≥ 18 px o negrita ≥ 14 px). Para textos pequeños o enlaces en terracota se usa la
+  variante oscura `#A4532C` (4,6:1).
+- Texto blanco sobre terracota: 3,8:1 → solo en botones con texto en negrita.
 
 ## Reglas obligatorias (el Supervisor rechaza si no se cumplen)
 1. Nada de afirmaciones veterinarias o de salud sin respaldo ("cura", "previene enfermedades").
