@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "puavi"
+version = "0.1.0"
+description = "PUAVI AI: agentes de marketing con aprobación humana"
+requires-python = ">=3.12"
+dependencies = [
+  "psycopg[binary]>=3.2,<4",
+  "pydantic>=2.8,<3",
+  "pydantic-settings>=2.4,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+include = ["puavi*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["db: requiere Postgres (PUAVI_TEST_ADMIN_DSN)"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106", "S608"]
