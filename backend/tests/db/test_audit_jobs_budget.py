@@ -128,6 +128,7 @@ def test_authenticated_can_only_execute_allowlisted_functions(admin):
         "approve_proposal",
         "reject_proposal",
         "audit_verify_chain",
+        "request_run",
     }
 
 

@@ -22,6 +22,17 @@ class _Base(BaseSettings):
     environment: str = Field(default="development", alias="PUAVI_ENV")
     log_level: str = Field(default="INFO", alias="PUAVI_LOG_LEVEL")
 
+    # Almacenamiento (Supabase Storage con usuario técnico, o carpeta local)
+    supabase_url: str | None = Field(default=None, alias="SUPABASE_URL")
+    supabase_anon_key: SecretStr | None = Field(default=None, alias="SUPABASE_ANON_KEY")
+    storage_email: str | None = Field(default=None, alias="PUAVI_STORAGE_EMAIL")
+    storage_password: SecretStr | None = Field(default=None, alias="PUAVI_STORAGE_PASSWORD")
+    local_media_dir: str | None = Field(default=None, alias="PUAVI_LOCAL_MEDIA_DIR")
+
+    shopify_store_domain: str | None = Field(default=None, alias="SHOPIFY_STORE_DOMAIN")
+    shopify_api_version: str = Field(default="2025-10", alias="SHOPIFY_API_VERSION")
+    instagram_user_id: str | None = Field(default=None, alias="INSTAGRAM_USER_ID")
+
 
 class AgentSettings(_Base):
     """Worker de agentes (incluye al supervisor, con su propia conexión)."""
@@ -29,9 +40,13 @@ class AgentSettings(_Base):
     agent_db_url: SecretStr = Field(alias="PUAVI_AGENT_DB_URL")
     supervisor_db_url: SecretStr = Field(alias="PUAVI_SUPERVISOR_DB_URL")
     anthropic_api_key: SecretStr | None = Field(default=None, alias="ANTHROPIC_API_KEY")
-    shopify_store_domain: str | None = Field(default=None, alias="SHOPIFY_STORE_DOMAIN")
     shopify_read_token: SecretStr | None = Field(default=None, alias="SHOPIFY_READ_TOKEN")
+    meta_read_token: SecretStr | None = Field(default=None, alias="META_READ_TOKEN")
+    tiktok_read_token: SecretStr | None = Field(default=None, alias="TIKTOK_READ_TOKEN")
+    elevenlabs_api_key: SecretStr | None = Field(default=None, alias="ELEVENLABS_API_KEY")
+    elevenlabs_voice_id: str | None = Field(default=None, alias="ELEVENLABS_VOICE_ID")
     worker_id: str = Field(default="worker-1", alias="PUAVI_WORKER_ID")
+    poll_seconds: int = Field(default=20, ge=5, le=600, alias="PUAVI_WORKER_POLL_SECONDS")
 
     @classmethod
     def load(cls) -> AgentSettings:
@@ -45,10 +60,13 @@ class ExecutorSettings(_Base):
 
     executor_db_url: SecretStr = Field(alias="PUAVI_EXECUTOR_DB_URL")
     dry_run: bool = Field(default=True, alias="PUAVI_EXECUTOR_DRY_RUN")
-    shopify_store_domain: str | None = Field(default=None, alias="SHOPIFY_STORE_DOMAIN")
     shopify_write_token: SecretStr | None = Field(default=None, alias="SHOPIFY_WRITE_TOKEN")
     meta_access_token: SecretStr | None = Field(default=None, alias="META_ACCESS_TOKEN")
+    meta_ad_account_id: str | None = Field(default=None, alias="META_AD_ACCOUNT_ID")
     tiktok_access_token: SecretStr | None = Field(default=None, alias="TIKTOK_ACCESS_TOKEN")
+    tiktok_mode: str = Field(default="inbox", pattern="^(inbox|direct)$", alias="TIKTOK_POST_MODE")
+    brevo_api_key: SecretStr | None = Field(default=None, alias="BREVO_API_KEY")
+    brevo_sender_email: str | None = Field(default=None, alias="BREVO_SENDER_EMAIL")
     poll_seconds: int = Field(default=30, ge=5, le=3600, alias="PUAVI_EXECUTOR_POLL_SECONDS")
 
     @classmethod

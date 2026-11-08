@@ -68,7 +68,7 @@ class ChangePricePayload(_Payload):
 class ModifyProductPayload(_Payload):
     product_id: str = Field(min_length=1, max_length=100)
     changes: dict[
-        Literal["title", "description_html", "seo_title", "seo_description", "tags", "images"],
+        Literal["title", "description_html", "seo_title", "seo_description", "tags"],
         Any,
     ] = Field(min_length=1)
     reason: str = Field(min_length=5, max_length=1000)
