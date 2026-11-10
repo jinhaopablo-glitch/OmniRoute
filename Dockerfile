@@ -33,8 +33,8 @@ ARG NODE_DIST_URL=
 # that already have a fix published in trixie. CVEs without an upstream fix yet
 # (local-only TOCTOU, etc.) remain until the distro patches them and the image
 # is rebuilt; none are reachable from the proxy's request surface at runtime.
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   sed -i -E "s|https?://deb.debian.org|${APT_MIRROR}|g" /etc/apt/sources.list.d/debian.sources \
   && if [ -n "${NPM_REGISTRY}" ]; then npm config set registry "${NPM_REGISTRY}"; fi \
   && apt-get update \
@@ -96,8 +96,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build tools for native module compilation
 # apt-get update needed here because base's rm -rf clears the shared cache
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   apt-get update \
   && apt-get install -y --no-install-recommends python3 make g++ \
   && rm -rf /var/lib/apt/lists/*
@@ -132,7 +132,7 @@ RUN test -f package-lock.json \
 # node-gyp comes from npm's own bundled copy (deterministic, already in the image)
 # instead of `npx --yes`, which would install an arbitrary registry version
 # on-demand and run its lifecycle scripts (Sonar docker:S6505).
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,target=/root/.npm \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-npm-cache,target=/root/.npm \
   npm ci --include=optional --no-audit --no-fund --legacy-peer-deps --ignore-scripts \
   && (cd node_modules/better-sqlite3 \
       && if [ -n "${NODE_DIST_URL}" ]; then export NODEJS_ORG_MIRROR="${NODE_DIST_URL}"; fi \
@@ -244,7 +244,7 @@ ENV OMNIROUTE_WEBPACK_BUILD_CACHE=$OMNIROUTE_WEBPACK_BUILD_CACHE
 COPY . ./
 # The cache mount keeps .build/next/cache across builds on the same BuildKit host.
 # It holds only the SWC cache unless OMNIROUTE_WEBPACK_BUILD_CACHE=1.
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-next-cache,target=/app/.build/next/cache \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-next-cache,target=/app/.build/next/cache \
   mkdir -p /app/data \
   && npm run build \
   && node --input-type=module -e "import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; const standaloneRoot = '/app/.build/next/standalone/node_modules/'; const require = createRequire('/app/.build/next/standalone/package.json'); for (const pkg of ['@atjsh/llmlingua-2', '@huggingface/transformers', 'js-tiktoken']) { const resolved = require.resolve(pkg); if (!resolved.startsWith(standaloneRoot)) throw new Error(pkg + ' resolved outside standalone: ' + resolved); await import(pathToFileURL(resolved).href); } const onnxRuntime = require.resolve('onnxruntime-node'); if (!onnxRuntime.startsWith(standaloneRoot)) throw new Error('onnxruntime-node resolved outside standalone: ' + onnxRuntime); await import(pathToFileURL(onnxRuntime).href);"
@@ -363,8 +363,8 @@ COPY --from=builder /app/node_modules/playwright ./node_modules/playwright
 # browsers land under /home/node which persists across image layers and is
 # accessible to the non-root runtime user.
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   apt-get update \
   && node node_modules/playwright/cli.js install chromium --with-deps \
   && apt-get install -y --no-install-recommends xvfb \
@@ -390,8 +390,8 @@ COPY --from=builder /app/node_modules/playwright-core ./node_modules/playwright-
 COPY --from=builder /app/node_modules/playwright ./node_modules/playwright
 
 # Install system dependencies required by openclaw (git+ssh references).
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   apt-get update \
   && apt-get install -y --no-install-recommends git ca-certificates \
   && rm -rf /var/lib/apt/lists/* \
@@ -410,7 +410,7 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,targe
 # `cli_not_found` handling is correct but every PAT login fails with
 # `spawn qodercli ENOENT`. Same pinning rationale as the tools above.
 # npm 12 requires an explicit allowlist for required global lifecycle scripts.
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,target=/root/.npm \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-npm-cache,target=/root/.npm \
   npm install -g --no-audit --no-fund --allow-scripts=@anthropic-ai/claude-code,@qoder-ai/qodercli,droid,openclaw,sharp,@google/genai,tree-sitter-bash,protobufjs \
     @openai/codex@0.165.0 \
     @anthropic-ai/claude-code@2.1.260 \
@@ -439,8 +439,8 @@ FROM runner-cli-core AS runner-cli
 
 USER root
 
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
+RUN --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,id=s/084273fa-7aed-4a93-984e-df654a9b6c0b-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   apt-get update \
   && apt-get install -y --no-install-recommends docker.io docker-compose \
   && rm -rf /var/lib/apt/lists/*
